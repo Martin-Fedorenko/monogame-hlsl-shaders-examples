@@ -31,6 +31,8 @@ float3 LightTwoPosition;
 float3 LightOneColor;
 float3 LightTwoColor;
 
+float4 plano;
+
 struct VertexShaderInput
 {
 	float4 Position : POSITION0;
@@ -41,6 +43,7 @@ struct VertexShaderInput
 struct VertexShaderOutput
 {
 	float4 Position : SV_POSITION;
+    float4 mesh : TEXCOORD2;
     float4 Color : COLOR0;
     float2 TextureCoordinate : TEXCOORD1;
 };
@@ -62,8 +65,9 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 	VertexShaderOutput output = (VertexShaderOutput)0;
 
 	// Project position
+    output.mesh = input.Position;
     output.Position = mul(input.Position, WorldViewProjection);
-
+    
 	// Propagate texture coordinates
     output.TextureCoordinate = input.TextureCoordinate;
 
@@ -75,8 +79,31 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
-    return tex2D(textureSampler, input.TextureCoordinate);
+    float4 textureColor = tex2D(textureSampler, input.TextureCoordinate);
+    float4 p = plano;
+    float4 t = input.mesh;
+    float resultado = p.x*t.x + p.y*t.y + p.z*t.z - p.w;
+    clip(resultado);
+    float4 green = float4(0.0, 1.0,0.0,1.0);
+    /*if(resultado<=3.0)
+        textureColor = lerp(textureColor, green, 0.8); //crea una franja solida 
+    else{
+        textureColor = textureColor;
+    }*/
+    float factor = smoothstep(0.0,5.0, resultado);
+    float4 color = lerp(green, textureColor, factor);
+    
+
+    //si resultado es -1 el punto esta a un lado del plano
+    //si resultado es 1 esta al otro lado del plano
+    //si resultado es 0 el punto esta dentro del plano
+
+    return color;
 }
+
+
+
+
 
 struct PostProcessingVertexShaderInput
 {

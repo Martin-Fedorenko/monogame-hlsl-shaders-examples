@@ -31,6 +31,8 @@ float3 LightTwoPosition;
 float3 LightOneColor;
 float3 LightTwoColor;
 
+float4 plano;
+
 struct VertexShaderInput
 {
 	float4 Position : POSITION0;
@@ -41,9 +43,9 @@ struct VertexShaderInput
 struct VertexShaderOutput
 {
 	float4 Position : SV_POSITION;
+    float4 mesh : TEXCOORD2;
     float4 Color : COLOR0;
     float2 TextureCoordinate : TEXCOORD1;
-    float4 pos : TEXCOORD2;
 };
 
 texture ModelTexture;
@@ -63,8 +65,9 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 	VertexShaderOutput output = (VertexShaderOutput)0;
 
 	// Project position
+    output.mesh = input.Position;
     output.Position = mul(input.Position, WorldViewProjection);
-    output.pos = mul(input.Position, WorldViewProjection);
+    
 	// Propagate texture coordinates
     output.TextureCoordinate = input.TextureCoordinate;
 
@@ -78,27 +81,19 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
-
-    float4 text=  tex2D(textureSampler, input.TextureCoordinate);
-    float4 color = float4(0.0,0.0,0.0,0.0);
-
-    //float resultado = sin(input.pos.y*PI)*sin(input.pos.x*PI); en espacio de proyeccion
-    
-    float2 ncd = input.pos.xy/input.pos.w;
-    /*float resultado = sin(50*ncd.y*PI)*sin(50*ncd.x*PI);
-
-    if(resultado>=0){
-        color = text;
-    }*/
-
-    //add different dimensions
-    float chessboard = floor(ncd.x) + floor(ncd.y);
-    //divide it by 2 and get the fractional part, resulting in a value of 0 for even and 0.5 for odd numbers.
-    chessboard = frac(chessboard * 0.5);
-    //multiply it by 2 to make odd values white instead of grey
-    chessboard *= 2;
-    return chessboard;
-    
+    float4 textureColor = tex2D(textureSampler, input.TextureCoordinate);
+    float4 red = float4(1.0, 0.0, 0.0, 1.0);
+    float radio = pow(50*frac(Time*PI/4), 1.2);
+    float distToCenter = distance(input.mesh.xy, float2(-5.0,20.0));
+    float factor;
+    float4 color;
+    if(distToCenter< radio+20.0)
+        if(distToCenter > radio){
+            //textureColor = red;
+            factor = smoothstep(radio+20.0 , radio, distToCenter);
+            textureColor = lerp(red,textureColor, factor);
+        }
+    return textureColor;
 }
 
 
@@ -162,6 +157,40 @@ technique PostProcessing
         PixelShader = compile PS_SHADERMODEL PostProcessPS();
     }
 }
+
+
+/*float4 MainPS(VertexShaderOutput input) : COLOR
+{
+    float4 color;
+    float factor;
+    float4 textureColor = tex2D(textureSampler, input.TextureCoordinate);
+    float4 red = float4(1.0, 0.0, 0.0, 1.0);
+
+    float radio = pow(100.0*frac(Time*PI/4), 1.2);
+    float distToCenter = distance(input.mesh.xy, float2(-5.0,20.0));
+    
+    if(distToCenter < radio){
+            factor = smoothstep(radio , 0.0, distToCenter);
+            color = lerp(textureColor,red, factor);
+        
+    }
+
+float4 PostProcessPS(PostProcessingVertexShaderOutput input) : COLOR
+{
+    /*float deltaX = fmod(input.TextureCoordinate.x*40, 40);
+    float deltaY = fmod(input.TextureCoordinate.y*40, 40);
+
+    float deltaLineX = fmod(deltaX, 1);
+    float deltaLineY = fmod(deltaY, 1);
+
+    if(deltaLineX<0.1 || deltaLineY<0.1){
+        return float4(0.0,0.0,0.0,1.0);
+    }
+
+    return tex2D(textureSampler, input.TextureCoordinate);
+
+}*/
+
 
 
 

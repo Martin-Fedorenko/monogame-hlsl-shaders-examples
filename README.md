@@ -1,2 +1,3 @@
-# monogame-hlsl-shaders-examples
-HLSL shaders examples using Monogame Framework
+tgc-exam
+
+Plantilla para el examen de la asignatura.

@@ -43,6 +43,7 @@ struct VertexShaderOutput
 	float4 Position : SV_POSITION;
     float4 Color : COLOR0;
     float2 TextureCoordinate : TEXCOORD1;
+    float4 pos : TEXCOORD2;
 };
 
 texture ModelTexture;
@@ -62,19 +63,8 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 	VertexShaderOutput output = (VertexShaderOutput)0;
 
 	// Project position
-    float4 meshPos = input.Position;
-
-    if(meshPos.y>5){
-        if(meshPos.x>=0){
-            meshPos.x = 0.05*meshPos.x*meshPos.y; 
-        }else{
-            meshPos.x = 0.05*meshPos.x*meshPos.y; 
-        }
-       
-    }
-
-    output.Position = mul(meshPos, WorldViewProjection);
-
+    output.Position = mul(input.Position, WorldViewProjection);
+    output.pos = mul(input.Position, WorldViewProjection);
 	// Propagate texture coordinates
     output.TextureCoordinate = input.TextureCoordinate;
 
@@ -84,9 +74,31 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     return output;
 }
 
+#define PI 3.1415926535898
+
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
-    return tex2D(textureSampler, input.TextureCoordinate);
+
+    float4 text=  tex2D(textureSampler, input.TextureCoordinate);
+    float4 color = float4(0.0,0.0,0.0,0.0);
+
+    //float resultado = sin(input.pos.y*PI)*sin(input.pos.x*PI); en espacio de proyeccion
+    
+    float2 ncd = input.pos.xy/input.pos.w;
+    float resultado = sin(50*ncd.y*PI)*sin(50*ncd.x*PI);
+
+    if(resultado>=0){
+        color = text;
+    }
+
+    //add different dimensions
+    //float chessboard = floor(ncd.x) + floor(ncd.y);
+    //divide it by 2 and get the fractional part, resulting in a value of 0 for even and 0.5 for odd numbers.
+    //chessboard = frac(chessboard * 0.5);
+    //multiply it by 2 to make odd values white instead of grey
+    //chessboard *= 2;
+    return color;
+    
 }
 
 
@@ -150,8 +162,6 @@ technique PostProcessing
         PixelShader = compile PS_SHADERMODEL PostProcessPS();
     }
 }
-
-
 
 
 

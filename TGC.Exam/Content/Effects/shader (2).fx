@@ -16,10 +16,12 @@
 float4x4 World;
 float4x4 View;
 float4x4 Projection;
+float4x4 WorldViewProjection;
 
-float3 DiffuseColor;
+float3 CameraPosition;
 
-float Time;
+float Time = 0;
+float4 plano;
 
 texture Textura;
 
@@ -55,9 +57,8 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
     float4 worldPosition = mul(input.Position, World);
     output.worldPos = worldPosition;
     // World space to View space
-    float4 viewPosition = mul(worldPosition, View);	
 	// View space to Projection space
-    output.Position = mul(viewPosition, Projection);
+    output.Position = mul(input.Position, WorldViewProjection);
 	output.TextureCoordinate = input.TextureCoordinate;
 
 
@@ -66,7 +67,17 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {	
-	float4 textureColor = tex2D(textureSampler, float2(input.TextureCoordinate.x, input.TextureCoordinate.y));
+	float4 textureColor = tex2D(textureSampler, input.TextureCoordinate);
+    float4 p = plano;
+    float4 t = input.worldPos;
+    float resultado = p.x*t.x + p.y*t.y + p.z*t.z - p.w;
+
+    //si resultado es -1 el punto esta a un lado del plano
+    //si resultado es 1 esta al otro lado del plano
+    //si resultado es 0 el punto esta dentro del plano
+    
+    clip(resultado);
+    
     return textureColor;
 }
 

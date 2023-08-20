@@ -19,7 +19,7 @@ float4x4 Projection;
 
 float3 DiffuseColor;
 
-float Time = 0;
+float Time;
 
 texture Textura;
 
@@ -33,6 +33,7 @@ struct VertexShaderOutput
 {
     float4 Position : SV_POSITION;
     float2 TextureCoordinate : TEXCOORD0;
+    float4 worldPos : TEXCOORD1;
 	
 };
 
@@ -47,11 +48,17 @@ sampler2D textureSampler = sampler_state {
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
 {
-	
+	float radius = lerp(10, 100, sin(Time)*0.5+0.5);
+    float3 sphere = length(input.Position.xyz)>radius ? normalize(input.Position.xyz) * radius : input.Position.xyz;
+    float4 coordinates = float4(sphere, input.Position.w);
+    
     // Clear the output
 	VertexShaderOutput output = (VertexShaderOutput)0;
+
+    float4 worldPosition = mul(coordinates, World);
     // Model space to World space
-    float4 worldPosition = mul(input.Position, World);
+    //float4 worldPosition = mul(float4(input.Position.x *= sin(Time), input.Position.y *= sin(Time), input.Position.z *= sin(Time), input.Position.w) *= sin(Time), World);
+    output.worldPos = worldPosition;
     // World space to View space
     float4 viewPosition = mul(worldPosition, View);	
 	// View space to Projection space
@@ -65,10 +72,10 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 float4 MainPS(VertexShaderOutput input) : COLOR
 {	
 	float4 textureColor = tex2D(textureSampler, input.TextureCoordinate);
-	//cambiar la textura para probar
-	clip(textureColor.r-1);
-
-    return textureColor;
+    float4 azul = float4(0.0,0.0,255.0,1.0);
+    float4 color = lerp(azul, textureColor, sin(Time)*0.5+0.5);
+    
+    return color;
 }
 
 technique BasicColorDrawing

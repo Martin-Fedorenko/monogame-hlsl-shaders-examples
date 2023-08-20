@@ -13,102 +13,89 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Effects/BlinnPhong.fx
+#begin Effects/shader (1).fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Effects/BlinnPhong.fx
+/build:Effects/shader (1).fx
 
-#begin Effects/Bloom.fx
+#begin Effects/shader (10).fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Effects/Bloom.fx
+/build:Effects/shader (10).fx
 
-#begin Effects/EnvironmentMap.fx
+#begin Effects/shader (11).fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Effects/EnvironmentMap.fx
+/build:Effects/shader (11).fx
 
-#begin Effects/TgcExamShader.fx
+#begin Effects/shader (12).fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Effects/TgcExamShader.fx
+/build:Effects/shader (12).fx
 
-#begin Effects/TgcExamShader1.fx
+#begin Effects/shader (13).fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Effects/TgcExamShader1.fx
+/build:Effects/shader (13).fx
 
-#begin Effects/TgcExamShader2.fx
+#begin Effects/shader (14).fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Effects/TgcExamShader2.fx
+/build:Effects/shader (14).fx
 
-#begin Effects/TgcExamShader3.fx
+#begin Effects/shader (2).fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Effects/TgcExamShader3.fx
+/build:Effects/shader (2).fx
 
-#begin Effects/TgcExamShader4.fx
+#begin Effects/shader (3).fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Effects/TgcExamShader4.fx
+/build:Effects/shader (3).fx
 
-#begin Effects/TgcExamShader5.fx
+#begin Effects/shader (4).fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Effects/TgcExamShader5.fx
+/build:Effects/shader (4).fx
 
-#begin Effects/TgcExamShader6.fx
+#begin Effects/shader (5).fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Effects/TgcExamShader6.fx
+/build:Effects/shader (5).fx
 
-#begin Effects/TgcExamShader7.fx
+#begin Effects/shader (6).fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Effects/TgcExamShader7.fx
+/build:Effects/shader (6).fx
 
-#begin Effects/TgcExamShader8.fx
+#begin Effects/shader (7).fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Effects/TgcExamShader8.fx
+/build:Effects/shader (7).fx
 
-#begin Effects/TgcExamShader9.fx
+#begin Effects/shader (8).fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:Effects/TgcExamShader9.fx
+/build:Effects/shader (8).fx
 
-#begin Models/tgcito-classic/tgcito-classic.obj
-/importer:FbxImporter
-/processor:ModelProcessor
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
-/build:Models/tgcito-classic/tgcito-classic.obj
+#begin Effects/shader (9).fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/shader (9).fx
 
 #begin Textures/adoquin-2.jpg
 /importer:TextureImporter
@@ -181,6 +168,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Textures/muddy.jpg
+
+#begin Textures/perlin.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/perlin.png
 
 #begin Textures/stones.bmp
 /importer:TextureImporter

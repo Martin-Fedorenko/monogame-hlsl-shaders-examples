@@ -43,6 +43,7 @@ struct VertexShaderOutput
 	float4 Position : SV_POSITION;
     float4 Color : COLOR0;
     float2 TextureCoordinate : TEXCOORD1;
+    float4 Mesh : TEXCOORD2;
 };
 
 texture ModelTexture;
@@ -58,12 +59,21 @@ sampler2D textureSampler = sampler_state
 float Time = 0;
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
-{
+{   
+    
+    float radio = 2.5;
+    float3 posicionXZ = float3(input.Position.x, 0.0, input.Position.z );
+    float3 cilindro = length(input.Position)>2.5 ? normalize(posicionXZ) * radio : posicionXZ;
+    float4 coordenadas = float4(cilindro.x, input.Position.y, cilindro.z, input.Position.w);
+    
+    // Clear the output
 	VertexShaderOutput output = (VertexShaderOutput)0;
 
+    //Mesh position
+    output.Mesh = input.Position;
 	// Project position
-    output.Position = mul(input.Position, WorldViewProjection);
-
+    output.Position = mul(coordenadas, WorldViewProjection);
+    
 	// Propagate texture coordinates
     output.TextureCoordinate = input.TextureCoordinate;
 
@@ -75,12 +85,12 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
-    return tex2D(textureSampler, input.TextureCoordinate);
+    float4 textureColor = tex2D(textureSampler, input.TextureCoordinate);
+
+    clip(input.Mesh.y);
+
+    return textureColor;
 }
-
-
-
-
 
 struct PostProcessingVertexShaderInput
 {
@@ -113,7 +123,13 @@ PostProcessingVertexShaderOutput PostProcessVS(in PostProcessingVertexShaderInpu
 
 float4 PostProcessPS(PostProcessingVertexShaderOutput input) : COLOR
 {
-    return tex2D(textureSampler, input.TextureCoordinate);
+    float4 t =  tex2D(textureSampler, input.TextureCoordinate);
+    float2 p = input.TextureCoordinate;
+    float centroPantalla = float2(0.5, 0.5);
+
+    float4 colorFinal = distance(p, centroPantalla)> 0.25 ? (t.r + t.g + t.b)/3 : t;
+
+    return colorFinal;
 }
 
 
